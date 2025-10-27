@@ -1,0 +1,50 @@
+Requisição HTTP:
+URL: https://pokeapi.co/api/v2/pokemon
+    ${IP}/${path = caminho de identificação do recurso}
+
+IP: https://pokeapi.co => Aqui é o domínio porém, algum servidor de
+DNS sabe como converter esse domínio para um endereço de IP
+
+path: /api/v2/pokemon => é a identificação do nosso recurso
+
+Request Method: GET | POST | PUT | DELETE| PATCH
+    - GET => Puxa informações do banco
+    - POST => Insere dados no banco
+    - PUT => Quando quer fazer alguma atualização completa de algum dado. OBS.: Se o dado não existir, ele acaba criando
+    - DELETE => Deleta a informação do banco
+    - PATCH => Quando quer fazer alguma atualização de parte do dado
+
+# Como fazer o GET?
+1º) No prórpio path;
+2º) Através de query string (mais usada)
+    - Começa após a "?";
+    - Trabalha com conjunto "chave=valor";
+    - Serve para passar algum filtro trambém
+
+ex.: Requere os pokemons que são do tipo grass e comecem com a letra "i"
+https://pokeapi.co/api/v2/pokemon?type=grass&name=i
+
+type=grass&name=i => essa é a query string com 2 chaves; 
+
+# Headers
+Request Headers => Configuração da requisição
+    - ex.: accept-language: 
+    pt-BR,
+    pt;q=0.9,
+    en-US;q=0.8,
+    en;q=0.7
+
+    - Autorization => passa as credenciais de autorização de acesso
+
+Response Headers => Configuração das resposta do servidor
+
+Dependendo da requisição que estiver usando, temos o BODY. Como por exemplo quando temos os POST, PUT ou PATCH. Onde passamos dados, informações.
+Body {
+    "name":"Teste"
+}
+
+STATUS CODE => Retorna um número dizendo o que aconteceu com nossa requisição. 
+    - 200 => OK
+    - 300 => 
+    - 400 => Erro do cliente
+    - 500 => Algum problema do servidor
