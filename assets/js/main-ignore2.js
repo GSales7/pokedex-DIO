@@ -2,7 +2,7 @@ const pokemonList = document.getElementById("pokemonList");
 const loadMoreButton = document.getElementById("loadMoreButton");
 const loadLessButton = document.getElementById("showLessButton");
 
-const maxRecords = 20;
+const maxRecords = 18;
 const limit = 6;
 let offset = 0;
 
@@ -33,7 +33,7 @@ function loadPokemonItens(offset, limit) {
   pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
     const newHtml = pokemons.map(convertPokemonToLi).join("");
     pokemonList.innerHTML += newHtml;
-    // addEventListenerToEachLi();
+    addEventListenerToEachLi();
     updateButtons();
   });
 }
@@ -55,23 +55,24 @@ function updateButtons() {
   loadLessButton.style.display = currentCount <= limit ? "none" : "";
 }
 
-// Funcao que adiciona o EventListener a Lista e pega qual Li mais proximo do click ou dispensa se foi no vazio
-pokemonList.addEventListener("click", (event) => {
-  // Pega o elemento Li mais próximo da onde foi o click
-  const clikedLi = event.target.closest("li.pokemon");
-  // Verifica se o click foi fora do li, se foi, não faz nada
-  if (!clikedLi) return;
-
-  if (clikedLi.classList.contains("selected")) {
-    clikedLi.classList.remove("selected");
-    return;
-  }
-
+// Função que adiciona um EventListiner para cada Li
+// Funcionou muito bem, porém, não é a forma mais eficiente
+function addEventListenerToEachLi() {
   const liList = pokemonList.querySelectorAll("li.pokemon");
-  liList.forEach((li) => li.classList.remove("selected"));
 
-  clikedLi.classList.add("selected");
-});
+  liList.forEach((li) => {
+    li.addEventListener("click", () => {
+      if (li.classList.contains("selected")) {
+        li.classList.remove("selected");
+        return;
+      }
+
+      liList.forEach((li2) => li2.classList.remove("selected"));
+
+      li.classList.add("selected");
+    });
+  });
+}
 
 // Carrega os pokemons iniciais
 loadPokemonItens(offset, limit);
@@ -86,6 +87,9 @@ loadMoreButton.addEventListener("click", () => {
   if (qtdRecordNextPage >= maxRecords) {
     const newLimit = maxRecords - offset;
     loadPokemonItens(offset, newLimit);
+
+    // Remove o botão de carregar mais itens
+    // loadMoreButton.parentElement.removeChild(loadMoreButton);
 
     // Não remove o botão apenas "esconde" ele
     loadMoreButton.style.display = "none";
@@ -113,4 +117,3 @@ loadLessButton.addEventListener("click", () => {
     updateButtons();
   }
 });
-s;
