@@ -6,9 +6,10 @@ const maxRecords = 18;
 const limit = 6;
 let offset = 0;
 
+// Função que converte um pokemon em um elemento Li do html
 function convertPokemonToLi(pokemon) {
   return `
-          <li class="pokemon ${pokemon.type}" id=${pokemon.number}>
+          <li class="pokemon ${pokemon.type}">
           <span class="number">#${pokemon.number}</span>
           <span class="name">${pokemon.name}</span>
 
@@ -27,14 +28,17 @@ function convertPokemonToLi(pokemon) {
         </li>`;
 }
 
+// Função que faz o carregamento de novos pokemons
 function loadPokemonItens(offset, limit) {
   pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
     const newHtml = pokemons.map(convertPokemonToLi).join("");
     pokemonList.innerHTML += newHtml;
+    addEventListenerToEachLi();
     updateButtons();
   });
 }
 
+// Função que faz a remoção dos elementos Li
 function removeLastN(n) {
   for (let i = 0; i < n; i++) {
     const last = pokemonList.lastElementChild;
@@ -43,11 +47,31 @@ function removeLastN(n) {
   }
 }
 
+// Função que atualiza o status dos botões
 function updateButtons() {
   const currentCount = pokemonList.children.length;
 
   loadMoreButton.style.display = currentCount >= maxRecords ? "none" : "";
   loadLessButton.style.display = currentCount <= limit ? "none" : "";
+}
+
+// Função que adiciona um EventListiner para cada Li
+// Funcionou muito bem, porém, não é a forma mais eficiente
+function addEventListenerToEachLi() {
+  const liList = pokemonList.querySelectorAll("li.pokemon");
+
+  liList.forEach((li) => {
+    li.addEventListener("click", () => {
+      if (li.classList.contains("selected")) {
+        li.classList.remove("selected");
+        return;
+      }
+
+      liList.forEach((li2) => li2.classList.remove("selected"));
+
+      li.classList.add("selected");
+    });
+  });
 }
 
 // Carrega os pokemons iniciais
@@ -80,8 +104,6 @@ loadLessButton.addEventListener("click", () => {
   const currentCount = pokemonList.children.length;
 
   // Verifica se está na 1º página, se tiver, não faz nada
-  // if (currentCount <= limit) return;
-
   if (currentCount >= limit) {
     // Garante que fiquemos com pelo menos 1 página
     const itensToRemove = Math.min(limit, currentCount - limit);
@@ -92,11 +114,8 @@ loadLessButton.addEventListener("click", () => {
     // Atualiza o offset, mas garantindo que nunca seja negativo
     offset = Math.max(0, offset - limit);
 
-    // if (currentCount < maxRecords) {
-    //   loadMoreButton.style.display = "";
-    //   loadMoreButton.disabled = false;
-    // }
-
     updateButtons();
   }
 });
+
+// Adicionar EventListener para os Lis
